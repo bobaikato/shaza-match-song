@@ -12,7 +12,7 @@ Implement a function to return the N highest scored song signatures that are con
 You may assume the number of requested song matches for a song signature will never be negative, but it may be zero.
 
 **Example:** given A, B, C and D songs with the following scores and similarities given as input to our program:
-![song-similarities](https://gitlab.uk.shazamteam.net/raquel.pego/songmatches/raw/master/song-similarities.jpg)
+![song-similarities](https://gitlab.uk.shazamteam.net/amp/song-matches/raw/master/song-similarities.jpg)
 
 ```
      $> song A 1.1
