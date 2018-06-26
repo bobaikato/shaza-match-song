@@ -2,7 +2,7 @@
 
 ### Song Signature Matches ###
 
-Implement a function to return the N highest scored song signatures that are considered similar to another song signature.
+Please implement a function to return the N highest scored song signatures that are considered similar to another song signature.
 
 * Each song signature has a score and a list of song signatures it is most similar to.
 * The full list of similar song candidates for a given song signature is its entire similarity network (similarities, similarities of similarities, etc.). Note that the similarity relationship is bidirectional. (when A is similar to B, it's implicit that B is similar to A)
@@ -11,7 +11,7 @@ Implement a function to return the N highest scored song signatures that are con
 
 You may assume the number of requested song matches for a song signature will never be negative, but it may be zero.
 
-**Example:** given A, B, C and D songs with the following scores and similarities given as input to our program:
+**Example:** Given A, B, C and D songs with the following scores and similarities given as input to our program:
 ![song-similarities](https://gitlab.uk.shazamteam.net/amp/song-matches/raw/master/song-similarities.jpg)
 
 ```
@@ -49,5 +49,4 @@ You may assume the number of requested song matches for a song signature will ne
     $> result D
 ```
 
-You should design a solution which operates as a library, and does not make assumptions about the code calling it. For example,
-you may not assume that the song similarity network will remain the same between calls to the getSongMatches method.
+Please design a solution which operates as a library.
