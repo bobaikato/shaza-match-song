@@ -1,3 +1,5 @@
+package com.shazam;
+
 import java.util.List;
 
 public class MatchService {
