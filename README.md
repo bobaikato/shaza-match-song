@@ -49,4 +49,4 @@ You may assume the number of requested song matches for a song signature will ne
     $> result D
 ```
 
-Please design a solution which operates as a library.
+Please design a solution that is production ready and operates as a library.
