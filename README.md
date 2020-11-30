@@ -1,18 +1,24 @@
 # README #
 
-### Song Signature Matches ###
+### Song Matches ###
 
-Please implement a function to return the N highest scored song signatures that are considered similar to another song signature.
+All songs are given a score, to represent the quality of their metadata.
+We would like to return results to the end user with as high quality metadata as possible.
 
-* Each song signature has a score and a list of song signatures it is most similar to.
-* The full list of similar song candidates for a given song signature is its entire similarity network (similarities, similarities of similarities, etc.). Note that the similarity relationship is bidirectional. (when A is similar to B, it's implicit that B is similar to A)
-* The order of the song matches does not matter.
-* The original song signature shouldn't be considered in the result.
+Songs are also marked as similar to other songs.
+This can be represented by what we call a _similarity graph_.
 
-You may assume the number of requested song matches for a song signature will never be negative, but it may be zero.
+Given a number _**n**_ and a _similarity graph_ of songs, return the _**n**_ highest scoring similar songs for a given song.
 
-**Example:** Given A, B, C and D songs with the following scores and similarities given as input to our program:
-![song-similarities](https://gitlab.uk.shazamteam.net/amp/song-matches/raw/master/song-similarities.jpg)
+* Each given song has a score and a list of similar songs.
+* Similarity is commutative i.e. if A is similar to B then B is similar to A.
+* Similarity is transitive i.e. if A is similar to B, and B is similar to C, then A is similar to C.
+* The order of the songs that are returned does not matter.
+* The original song should not be considered in the result.
+* If _**n**_ is more than the number of similar songs, then return all of the similar songs.
+* If _**n**_ is zero, return no similar songs.
+
+**Example:** Given songs A, B, C and D with the following scores and similarities are given as input to your program:
 
 ```
      $> song A 1.1
@@ -49,4 +55,4 @@ You may assume the number of requested song matches for a song signature will ne
     $> result D
 ```
 
-Please design a solution that is production ready and operates as a library.
+Please write a solution that is production ready.
