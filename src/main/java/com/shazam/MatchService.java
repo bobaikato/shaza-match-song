@@ -22,7 +22,7 @@ public class MatchService {
     if (Objects.nonNull(song)) {
       ms.populateRatingAndSongsMap(song);
     } else {
-      FeignedLogger.log("Supplied root Song is <null>.");
+      Printer.print("Supplied root Song is <null>.");
     }
     return ms;
   }
@@ -33,7 +33,7 @@ public class MatchService {
    * @return List of top rated similar songs
    */
   public static List<Song> getSongMatches(final Song song, final int numTopRatedSimilarSongs) {
-    final List<Song> songMatches = new ArrayList<>();
+    List<Song> songMatches = new ArrayList<>();
 
     // No point processing to return nothing.
     if (numTopRatedSimilarSongs > 0) {
@@ -44,14 +44,17 @@ public class MatchService {
       for (final Set<Song> songs : songsCollection) {
         songs.remove(song); // O(1) operation to remove original song if it exist.
         if (songMatches.addAll(songs) && songMatches.size() >= numTopRatedSimilarSongs) {
-          return songMatches.subList(0, numTopRatedSimilarSongs);
+          songMatches = songMatches.subList(0, numTopRatedSimilarSongs);
         }
       }
     } else {
-      FeignedLogger.log("Skip processing: number of matched song requested is less than 1.");
+      Printer.print("Skip processing: number of matched song requested is less than 1.");
     }
 
-    FeignedLogger.log(songMatches.size() + " match(s) found.");
+    Printer.print(
+        songMatches.size() > 1
+            ? songMatches.size() + " matches found."
+            : songMatches.size() + " match found.");
 
     /*
      * I considered returning an Empty list. But, null is returned because it's expected in the
@@ -68,7 +71,7 @@ public class MatchService {
    * @param rootSong instance of a Song. Represent a songs with other similarities
    */
   private void populateRatingAndSongsMap(final Song rootSong) {
-    FeignedLogger.log("Start populating rating and song map from Root song", rootSong);
+    Printer.print("Start populating rating and song map from Root song", rootSong);
 
     final List<Song> similarSongsReference = new ArrayList<>();
     similarSongsReference.add(rootSong); // initial/First song on the list.
@@ -104,7 +107,7 @@ public class MatchService {
               });
     }
 
-    FeignedLogger.log(
+    Printer.print(
         "Finish populating Rating & Songs map. "
             + this.ratingAndSongsMap.size()
             + " unique ratings found.",

@@ -3,13 +3,13 @@ package com.shazam;
 import java.util.Objects;
 
 /**
- * This is not a real logger.
- * All it does is Print stuff out. Created Just for the purpose of this test.
+ * This is not a real logger,It just something to simplify always calling System print within the
+ * code it just prints stuff out, nothing serious.
  */
-public final class FeignedLogger {
+public final class Printer {
 
+  public static void print(String msg, final Song song) {
 
-  public static void log(String msg, final Song song) {
     String songName = "<unavailable>";
     String songRating = "<unavailable>";
 
@@ -18,10 +18,11 @@ public final class FeignedLogger {
       songRating = String.valueOf(song.getRating());
     }
 
-    System.out.println(msg + "\n\n— SONG META —\nSong Name: " + songName + "\nRating: " + songRating + "\n");
+    System.out.println(
+        msg + "\n\n— SONG META —\nSong Name: " + songName + "\nRating: " + songRating + "\n");
   }
 
-  public static void log(String msg) {
+  public static void print(String msg) {
     System.out.println(msg + "\n");
   }
 }
