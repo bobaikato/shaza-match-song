@@ -19,11 +19,7 @@ public class MatchService {
 
   private static MatchService process(final Song song) {
     final MatchService ms = new MatchService();
-    if (Objects.nonNull(song)) {
-      ms.populateRatingAndSongsMap(song);
-    } else {
-      Printer.print("Supplied root Song is <null>.");
-    }
+    ms.populateRatingAndSongsMap(song);
     return ms;
   }
 
@@ -35,20 +31,20 @@ public class MatchService {
   public static List<Song> getSongMatches(final Song song, final int numTopRatedSimilarSongs) {
     List<Song> songMatches = new ArrayList<>();
 
-    // No point processing to return nothing.
-    if (numTopRatedSimilarSongs > 0) {
+    if (numTopRatedSimilarSongs > 0 && Objects.nonNull(song)) {
 
       final MatchService ms = MatchService.process(song);
       final Collection<Set<Song>> songsCollection = ms.ratingAndSongsMap.values();
 
       for (final Set<Song> songs : songsCollection) {
         songs.remove(song); // O(1) operation to remove original song if it exist.
+
         if (songMatches.addAll(songs) && songMatches.size() >= numTopRatedSimilarSongs) {
           songMatches = songMatches.subList(0, numTopRatedSimilarSongs);
         }
       }
     } else {
-      Printer.print("Skip processing: number of matched song requested is less than 1.");
+      Printer.print("Skip processing, requested match count: " + numTopRatedSimilarSongs, song);
     }
 
     Printer.print(
@@ -93,7 +89,6 @@ public class MatchService {
     while (currentIndex < similarSongsReference.size()) {
 
       final Song currentSong = similarSongsReference.get(currentIndex++);
-
       currentSong.getSimilarSongs().parallelStream()
           .forEachOrdered(
               song -> {

@@ -54,7 +54,7 @@ class MatchServiceTest {
 
   @Test
   public void test() {
-    final List<Song> result = MatchService.getSongMatches(songMap.get("B0"), 0);
+    final List<Song> result = MatchService.getSongMatches(null, 6);
 
     String output = "result";
 
