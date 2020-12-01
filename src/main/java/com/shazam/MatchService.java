@@ -1,9 +1,8 @@
 package com.shazam;
 
-import static java.util.Collections.reverseOrder;
-
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +14,7 @@ import java.util.function.Consumer;
 public class MatchService {
 
   /** Represents a Map of Rating and related Songs from Highest rating to the least. */
-  private final Map<Float, Set<Song>> ratingAndSongsMap = new TreeMap<>(reverseOrder());
+  private final Map<Float, Set<Song>> ratingAndSongsMap = new TreeMap<>(Collections.reverseOrder());
 
   private static MatchService process(final Song song) {
     final MatchService ms = new MatchService();
@@ -32,7 +31,6 @@ public class MatchService {
     List<Song> songMatches = new ArrayList<>();
 
     if (numTopRatedSimilarSongs > 0 && Objects.nonNull(song)) {
-
       final MatchService ms = MatchService.process(song);
       final Collection<Set<Song>> songsCollection = ms.ratingAndSongsMap.values();
 
@@ -41,6 +39,7 @@ public class MatchService {
 
         if (songMatches.addAll(songs) && songMatches.size() >= numTopRatedSimilarSongs) {
           songMatches = songMatches.subList(0, numTopRatedSimilarSongs);
+          break;
         }
       }
     } else {
@@ -69,8 +68,8 @@ public class MatchService {
   private void populateRatingAndSongsMap(final Song rootSong) {
     Printer.print("Start populating rating and song map from Root song", rootSong);
 
-    final List<Song> similarSongsReference = new ArrayList<>();
-    similarSongsReference.add(rootSong); // initial/First song on the list.
+    final List<Song> similarSongsReferenceList = new ArrayList<>();
+    similarSongsReferenceList.add(rootSong); // initial/First song on the list.
 
     final Consumer<Song> populateRatingAndSongsMap =
         song -> {
@@ -85,18 +84,17 @@ public class MatchService {
         };
 
     int currentIndex = 0;
+    while (currentIndex < similarSongsReferenceList.size()) {
 
-    while (currentIndex < similarSongsReference.size()) {
-
-      final Song currentSong = similarSongsReference.get(currentIndex++);
+      final Song currentSong = similarSongsReferenceList.get(currentIndex++);
       currentSong.getSimilarSongs().parallelStream()
           .forEachOrdered(
               song -> {
                 if (Objects.nonNull(song)) {
                   populateRatingAndSongsMap.accept(song);
 
-                  if (!similarSongsReference.contains(song)) {
-                    similarSongsReference.add(song);
+                  if (!similarSongsReferenceList.contains(song)) {
+                    similarSongsReferenceList.add(song);
                   }
                 }
               });
