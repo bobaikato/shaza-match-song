@@ -2,19 +2,28 @@ package com.shazam;
 
 import static java.lang.Float.parseFloat;
 import static java.nio.file.Files.readAllLines;
+import static java.util.Collections.sort;
 import static org.junit.platform.commons.util.StringUtils.isNotBlank;
 
+import com.honerfor.cutils.function.Idler;
 import com.honerfor.cutils.value.Try;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 @DisplayName("Song Match Service Test")
 class MatchServiceTest {
@@ -40,9 +49,8 @@ class MatchServiceTest {
           }
         };
 
-    final String filePath = "src/test/java/com/shazam/input-data.txt";
-
-    Try.of(() -> readAllLines(Paths.get(filePath)))
+    final String dataFilePath = "src/test/java/com/shazam/input-data.txt";
+    Try.of(() -> readAllLines(Paths.get(dataFilePath)))
         .onSuccessOrElse(
             lines -> {
               lines.parallelStream().forEachOrdered(populateSongMap);
@@ -54,14 +62,14 @@ class MatchServiceTest {
 
   @Test
   public void test() {
-    final List<Song> result = MatchService.getSongMatches(songMap.get("B0"), 10);
+    final List<Song> result = MatchService.getSongMatches(songMap.get("F"), 1);
 
     String output = "result";
 
     if (result == null) {
       output += " <null>";
     } else {
-      Collections.sort(result, Comparator.comparing(s -> s.getName()));
+      sort(result, Comparator.comparing(s -> s.getName()));
 
       for (Song m : result) {
         output += " ";
