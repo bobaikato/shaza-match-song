@@ -79,4 +79,46 @@ class MatchServiceTest {
 
     System.out.println(output);
   }
+
+  private static Stream<Arguments> resources$A() {
+    return Stream.of(
+        Arguments.of("A", 1, Collections.singletonList("D")),
+        Arguments.of("A", 2, Arrays.asList("B", "D")),
+        Arguments.of("A", 4, Arrays.asList("C", "D", "B")),
+        Arguments.of("B", 1, Collections.singletonList("D")),
+        Arguments.of("B", 2, Arrays.asList("D", "C")),
+        Arguments.of("B", 4, Arrays.asList("D", "C", "A")),
+        Arguments.of("C", 1, Collections.singletonList("D")),
+        Arguments.of("C", 2, Arrays.asList("B", "D")),
+        Arguments.of("C", 4, Arrays.asList("A", "D", "B")),
+        Arguments.of("D", 1, Collections.singletonList("B")),
+        Arguments.of("D", 2, Arrays.asList("B", "C")),
+        Arguments.of("D", 4, Arrays.asList("C", "A", "B")),
+
+        Arguments.of("F", 4, Arrays.asList("G", "H", "I", "J")),
+        Arguments.of("G", 4, Arrays.asList("F", "J", "I", "H")),
+        Arguments.of("J", 4, Arrays.asList("G", "H", "I", "F")));
+  }
+
+  @DisplayName("[A] Should take valid Song Root and Song Match count.")
+  @ParameterizedTest(name = "{index} => Root Song={0}, Match Count={1}, Expected Result={2}")
+  @MethodSource("resources$A")
+  void getSongMatchesWithValidRootSongAndMatchCount(
+      final String rootSongKey, final int topRatedSimilarSongsCount, List<String> songKeys) {
+
+    final List<Song> actualSongList = Idler.supply(() -> songKeys
+        .parallelStream()
+        .map(songMap::get)
+        .collect(Collectors.toList()))
+        .get();
+
+    final Song rootSong = songMap.get(rootSongKey);
+    final List<Song> expectedSongList = MatchService.getSongMatches(rootSong, topRatedSimilarSongsCount);
+
+    assert expectedSongList != null;
+
+    Assertions.assertTrue(actualSongList.containsAll(expectedSongList));
+    Assertions.assertTrue(expectedSongList.containsAll(actualSongList));
+    Assertions.assertEquals(expectedSongList.size(), actualSongList.size());
+  }
 }
