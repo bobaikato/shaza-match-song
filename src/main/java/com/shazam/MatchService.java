@@ -32,7 +32,7 @@ public class MatchService {
   public static List<Song> getSongMatches(final Song song, final int numTopRatedSimilarSongs) {
     List<Song> songMatches = new ArrayList<>();
 
-    if (numTopRatedSimilarSongs > 0 && Objects.nonNull(song) && !song.getSimilarSongs().isEmpty()) {
+    if (numTopRatedSimilarSongs > 0 && Objects.nonNull(song) && song.similarSongsIsNotEmpty()) {
       final MatchService ms = MatchService.process(song);
       final Collection<Set<Song>> songsCollection = ms.ratingAndSongsMap.values();
 

@@ -30,4 +30,8 @@ public class Song {
   public List<Song> getSimilarSongs() {
     return similarSongs;
   }
+
+  public boolean similarSongsIsNotEmpty() {
+    return !this.similarSongs.isEmpty();
+  }
 }
