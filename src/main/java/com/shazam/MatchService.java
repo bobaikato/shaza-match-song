@@ -43,10 +43,10 @@ public class MatchService {
         }
       }
     } else {
-      Printer.print("Skip processing, requested match count: " + numTopRatedSimilarSongs, song);
+      FeignedLogger.log("Skip processing, requested match count: " + numTopRatedSimilarSongs, song);
     }
 
-    Printer.print(
+    FeignedLogger.log(
         songMatches.size() > 1
             ? songMatches.size() + " matches found."
             : songMatches.size() + " match found.");
@@ -66,7 +66,7 @@ public class MatchService {
    * @param rootSong instance of a Song. Represent a songs with other similarities
    */
   private void populateRatingAndSongsMap(final Song rootSong) {
-    Printer.print("Start populating rating and song map from Root song", rootSong);
+    FeignedLogger.log("Start populating rating and song map from Root song", rootSong);
 
     final List<Song> similarSongsReferenceList = new ArrayList<>();
     similarSongsReferenceList.add(rootSong); // initial/First song on the list.
@@ -100,7 +100,7 @@ public class MatchService {
               });
     }
 
-    Printer.print(
+    FeignedLogger.log(
         "Finish populating Rating & Songs map. "
             + this.ratingAndSongsMap.size()
             + " unique ratings found.",
