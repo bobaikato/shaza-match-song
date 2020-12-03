@@ -6,11 +6,17 @@ import static org.junit.platform.commons.util.StringUtils.isNotBlank;
 
 import com.honerfor.cutils.value.Try;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -48,8 +54,7 @@ class MatchServiceTest {
 
     final String dataFilePath = "src/test/java/com/shazam/input-data.txt";
     Try.of(() -> readAllLines(Paths.get(dataFilePath)))
-        .onSuccessOrElse(
-            lines -> {
+        .onSuccessOrElse(lines -> {
               lines.parallelStream().forEachOrdered(populateSongMap);
             },
             ex -> {
@@ -130,5 +135,59 @@ class MatchServiceTest {
   void songRootSelfReference() {
     final List<Song> actualSongList = MatchService.getSongMatches(songMap.get("X"), 2);
     Assertions.assertNull(actualSongList);
+  }
+
+  @Test
+  @DisplayName("[D] Should successfully operate as normal within a concurrent setup.")
+  void explicitConcurrentProcessing() {
+    final ExecutorService es = Executors.newCachedThreadPool();
+    final List<Callable<Map<String, List<Song>>>> actualSongMatchesCallables = new ArrayList<>();
+    final Map<String, List<Song>> expectedSongsMap = new HashMap<>();
+
+    final BiConsumer<String, List<String>> populateExpectedSongsMap = (rootSongKey, songKeys) -> {
+      final List<Song> expectedSongList = songKeys
+          .parallelStream()
+          .map(songMap::get)
+          .collect(Collectors.toList());
+
+      expectedSongsMap.put(rootSongKey, expectedSongList);
+    };
+
+    resources$B()
+        .parallel()
+        .forEachOrdered(resource -> {
+          final String songKey = String.valueOf(resource.get()[0]);
+
+          if (!expectedSongsMap.containsKey(songKey)) {
+            final int matchCount = (int) resource.get()[1];
+            final List<String> expectedSongsKeys = (List<String>) resource.get()[2];
+
+            populateExpectedSongsMap.accept(songKey, expectedSongsKeys);
+
+            final Callable<Map<String, List<Song>>> getSongMatchesCallable = () -> {
+              final Map<String, List<Song>> songsAndRootSongKeyMap = new HashMap<>();
+              final List<Song> actualSongList = MatchService.getSongMatches(songMap.get(songKey), matchCount);
+              songsAndRootSongKeyMap.put(songKey, actualSongList);
+              return songsAndRootSongKeyMap;
+            };
+
+            actualSongMatchesCallables.add(getSongMatchesCallable);
+          }
+        });
+
+
+    Try.of(() -> {
+      for (final Future<Map<String, List<Song>>> result : es.invokeAll(actualSongMatchesCallables)) {
+        final Map.Entry<String, List<Song>> entry = result.get().entrySet().iterator().next();
+        final String songKey = entry.getKey();
+        final List<Song> actualSongList = entry.getValue();
+
+        final List<Song> expectedSongList = expectedSongsMap.get(songKey);
+
+        Assertions.assertTrue(actualSongList.containsAll(expectedSongList));
+        Assertions.assertTrue(expectedSongList.containsAll(actualSongList));
+        Assertions.assertEquals(expectedSongList.size(), actualSongList.size());
+      }
+    });
   }
 }
