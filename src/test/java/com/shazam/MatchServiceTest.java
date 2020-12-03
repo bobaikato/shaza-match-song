@@ -73,7 +73,10 @@ class MatchServiceTest {
         Arguments.of("G", -4, null),
         Arguments.of("X", 4, null),
         Arguments.of("A1", 1, null),
-        Arguments.of("B0", 0, null));
+        Arguments.of("A1", 1, null),
+        Arguments.of("B0", 0, null),
+        Arguments.of("C", 3, null),
+        Arguments.of("N", 10, null));
   }
 
   @DisplayName("[A] Should return null if invalid Song Root and/or Song Match count is provided.")

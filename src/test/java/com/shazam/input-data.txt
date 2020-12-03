@@ -40033,3 +40033,9 @@ similar X X
 
 //Songs with all similar to it self End here Root Node =X
 
+
+song C 7.1
+song N 1.0
+
+//Song without similar song
+
