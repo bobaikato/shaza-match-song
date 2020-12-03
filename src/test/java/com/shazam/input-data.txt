@@ -10977,7 +10977,7 @@ song B10975 0.6672534
 song B10976 0.66607195
 song B10977 0.8238443
 song B10978 0.4309876
-song B10979 0.9997703
+song B10979 2.9997703
 song B10980 0.7368346
 song B10981 0.26742333
 song B10982 0.5748572
@@ -11007,7 +11007,7 @@ song B11005 0.39821595
 song B11006 0.64453596
 song B11007 0.040974796
 song B11008 0.39613008
-song B11009 0.29632932
+song B11009 10.29632932
 song B11010 0.8936322
 song B11011 0.15883958
 song B11012 0.7035656
@@ -11101,7 +11101,7 @@ song B11099 0.46644711
 song B11100 0.4626357
 song B11101 0.72860205
 song B11102 0.21536565
-song B11103 0.4372589
+song B11103 9.4372589
 song B11104 0.024863541
 song B11105 0.90452623
 song B11106 0.64812124
@@ -11156,7 +11156,7 @@ song B11154 0.89233
 song B11155 0.6291816
 song B11156 0.4018752
 song B11157 0.9492064
-song B11158 0.62851715
+song B11158 30.62851715
 song B11159 0.31914723
 song B11160 0.26858008
 song B11161 0.3724435
@@ -11168,7 +11168,7 @@ song B11166 0.64401156
 song B11167 0.55776286
 song B11168 0.83048475
 song B11169 0.026504517
-song B11170 0.44967288
+song B11170 8.44967288
 song B11171 0.1781798
 song B11172 0.8185402
 song B11173 0.05283177
@@ -39999,11 +39999,7 @@ similar B19997 B19998
 similar B19998 B19999
 similar B19999 B0
 
-
-
-
 //Large Data End here. Root node = B0
-
 
 song A 1.1
 song B 3.3
@@ -40017,13 +40013,6 @@ similar C D
 //Initial Task test Data End here. Root node = A
 
 
-song F0 7.1
-similar F0 F0
-similar F0 F0
-
-//Songs all simlar to it self
-
-
 song F 1.1
 song G 1.1
 song H 1.1
@@ -40034,4 +40023,13 @@ similar G H
 similar J F
 similar I J
 
-//Songs of same rating
+//Songs of same rating End here. Root Node = F
+
+song X 7.1
+similar X X
+similar X X
+similar X X
+similar X X
+
+//Songs with all similar to it self End here Root Node =X
+
