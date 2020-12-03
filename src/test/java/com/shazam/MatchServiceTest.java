@@ -75,7 +75,7 @@ class MatchServiceTest {
         Arguments.of("A1", 1, null),
         Arguments.of("A1", 1, null),
         Arguments.of("B0", 0, null),
-        Arguments.of("C", 3, null),
+        Arguments.of("P", 3, null),
         Arguments.of("N", 10, null));
   }
 
@@ -180,7 +180,6 @@ class MatchServiceTest {
             actualSongMatchesCallables.add(getSongMatchesCallable);
           }
         });
-
 
     try {
       for (final Future<Map<String, List<Song>>> result : es.invokeAll(actualSongMatchesCallables)) {
