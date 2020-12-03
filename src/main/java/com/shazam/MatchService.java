@@ -13,7 +13,9 @@ import java.util.function.Consumer;
 
 public class MatchService {
 
-  /** Represents a Map of Rating and related Songs from Highest rating to the least. */
+  /**
+   * Represents a Map of Rating and related Songs from Highest rating to the least.
+   */
   private final Map<Float, Set<Song>> ratingAndSongsMap = new TreeMap<>(Collections.reverseOrder());
 
   private static MatchService process(final Song song) {
@@ -30,7 +32,7 @@ public class MatchService {
   public static List<Song> getSongMatches(final Song song, final int numTopRatedSimilarSongs) {
     List<Song> songMatches = new ArrayList<>();
 
-    if (numTopRatedSimilarSongs > 0 && Objects.nonNull(song)) {
+    if (numTopRatedSimilarSongs > 0 && Objects.nonNull(song) && !song.getSimilarSongs().isEmpty()) {
       final MatchService ms = MatchService.process(song);
       final Collection<Set<Song>> songsCollection = ms.ratingAndSongsMap.values();
 
