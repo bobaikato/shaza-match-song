@@ -1,10 +1,10 @@
 package com.shazam;
 
 import static java.lang.Float.parseFloat;
-import static java.nio.file.Files.readAllLines;
 import static org.junit.platform.commons.util.StringUtils.isNotBlank;
 
-import com.honerfor.cutils.value.Try;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -52,14 +53,16 @@ class MatchServiceTest {
           }
         };
 
-    final String dataFilePath = "src/test/java/com/shazam/input-data.txt";
-    Try.of(() -> readAllLines(Paths.get(dataFilePath)))
-        .onSuccessOrElse(lines -> {
-              lines.parallelStream().forEachOrdered(populateSongMap);
-            },
-            ex -> {
-              System.out.println("An error occurred loading data => " + ex);
-            });
+
+    try {
+      final String dataFilePath = "src/test/java/com/shazam/input-data.txt";
+      Files.readAllLines(Paths.get(dataFilePath))
+          .parallelStream()
+          .forEachOrdered(populateSongMap);
+
+    } catch (final IOException e) {
+      e.printStackTrace();
+    }
   }
 
   private static Stream<Arguments> resources$A() {
@@ -139,7 +142,7 @@ class MatchServiceTest {
 
   @Test
   @DisplayName("[D] Should successfully operate as normal within a concurrent setup.")
-  void explicitConcurrentProcessing() {
+  void explicitConcurrentProcessing() throws ExecutionException {
     final ExecutorService es = Executors.newCachedThreadPool();
     final List<Callable<Map<String, List<Song>>>> actualSongMatchesCallables = new ArrayList<>();
     final Map<String, List<Song>> expectedSongsMap = new HashMap<>();
@@ -176,7 +179,7 @@ class MatchServiceTest {
         });
 
 
-    Try.of(() -> {
+    try {
       for (final Future<Map<String, List<Song>>> result : es.invokeAll(actualSongMatchesCallables)) {
         final Map.Entry<String, List<Song>> entry = result.get().entrySet().iterator().next();
         final String songKey = entry.getKey();
@@ -188,6 +191,8 @@ class MatchServiceTest {
         Assertions.assertTrue(expectedSongList.containsAll(actualSongList));
         Assertions.assertEquals(expectedSongList.size(), actualSongList.size());
       }
-    });
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
   }
 }

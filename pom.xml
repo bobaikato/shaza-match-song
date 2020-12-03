@@ -55,10 +55,5 @@
             <version>1.5.1</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.honerfor</groupId>
-            <artifactId>cutils</artifactId>
-            <version>7.0.1</version>
-        </dependency>
     </dependencies>
 </project>
