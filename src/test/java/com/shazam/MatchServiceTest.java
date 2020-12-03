@@ -2,15 +2,12 @@ package com.shazam;
 
 import static java.lang.Float.parseFloat;
 import static java.nio.file.Files.readAllLines;
-import static java.util.Collections.sort;
 import static org.junit.platform.commons.util.StringUtils.isNotBlank;
 
-import com.honerfor.cutils.function.Idler;
 import com.honerfor.cutils.value.Try;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,27 +57,31 @@ class MatchServiceTest {
             });
   }
 
-  @Test
-  public void test() {
-    final List<Song> result = MatchService.getSongMatches(songMap.get("F"), 1);
-
-    String output = "result";
-
-    if (result == null) {
-      output += " <null>";
-    } else {
-      sort(result, Comparator.comparing(s -> s.getName()));
-
-      for (Song m : result) {
-        output += " ";
-        output += m.getName();
-      }
-    }
-
-    System.out.println(output);
+  private static Stream<Arguments> resources$A() {
+    return Stream.of(
+        Arguments.of("D", -1, null),
+        Arguments.of("A", 0, null),
+        Arguments.of("K", 3, null),
+        Arguments.of("G", -4, null),
+        Arguments.of("X", 4, null),
+        Arguments.of("A1", 1, null),
+        Arguments.of("B0", 0, null));
   }
 
-  private static Stream<Arguments> resources$A() {
+  @DisplayName("[A] Should return null if invalid Song Root and/or Song Match count is provided.")
+  @ParameterizedTest(name = "{index} => Root Song={0}, Match Count={1}, Expected Result={2}")
+  @MethodSource("resources$A")
+  void getSongMatchesWithInvalidRootSongAndMatchCount(
+      final String rootSongKey, final int topRatedSimilarSongsCount, final List<Song> expectedSongList) {
+
+    final Song rootSong = songMap.get(rootSongKey);
+    final List<Song> actualSongList = MatchService.getSongMatches(rootSong, topRatedSimilarSongsCount);
+
+    Assertions.assertEquals(expectedSongList, actualSongList);
+    Assertions.assertNull(actualSongList);
+  }
+
+  private static Stream<Arguments> resources$B() {
     return Stream.of(
         Arguments.of("A", 1, Collections.singletonList("D")),
         Arguments.of("A", 2, Arrays.asList("B", "D")),
@@ -94,31 +95,40 @@ class MatchServiceTest {
         Arguments.of("D", 1, Collections.singletonList("B")),
         Arguments.of("D", 2, Arrays.asList("B", "C")),
         Arguments.of("D", 4, Arrays.asList("C", "A", "B")),
-
         Arguments.of("F", 4, Arrays.asList("G", "H", "I", "J")),
         Arguments.of("G", 4, Arrays.asList("F", "J", "I", "H")),
-        Arguments.of("J", 4, Arrays.asList("G", "H", "I", "F")));
+        Arguments.of("J", 4, Arrays.asList("G", "H", "I", "F")),
+        Arguments.of("J", 4, Arrays.asList("G", "H", "I", "F")),
+        Arguments.of("B100", 1, Collections.singletonList("B11158")),
+        Arguments.of("B0", 5, Arrays.asList("B10979", "B11009", "B11103", "B11158", "B11170")));
   }
 
-  @DisplayName("[A] Should take valid Song Root and Song Match count.")
+  @DisplayName("[B] Should take valid Song Root and Song Match count.")
   @ParameterizedTest(name = "{index} => Root Song={0}, Match Count={1}, Expected Result={2}")
-  @MethodSource("resources$A")
+  @MethodSource("resources$B")
   void getSongMatchesWithValidRootSongAndMatchCount(
-      final String rootSongKey, final int topRatedSimilarSongsCount, List<String> songKeys) {
+      final String rootSongKey, final int topRatedSimilarSongsCount, final List<String> songKeys) {
 
-    final List<Song> actualSongList = Idler.supply(() -> songKeys
+    final List<Song> expectedSongList = songKeys
         .parallelStream()
         .map(songMap::get)
-        .collect(Collectors.toList()))
-        .get();
+        .collect(Collectors.toList());
 
     final Song rootSong = songMap.get(rootSongKey);
-    final List<Song> expectedSongList = MatchService.getSongMatches(rootSong, topRatedSimilarSongsCount);
+    final List<Song> actualSongList = MatchService.getSongMatches(rootSong, topRatedSimilarSongsCount);
 
-    assert expectedSongList != null;
+    assert actualSongList != null;
 
     Assertions.assertTrue(actualSongList.containsAll(expectedSongList));
     Assertions.assertTrue(expectedSongList.containsAll(actualSongList));
     Assertions.assertEquals(expectedSongList.size(), actualSongList.size());
+  }
+
+
+  @Test
+  @DisplayName("[C] Should return null if Song Root Reference itself alone.")
+  void songRootSelfReference() {
+    final List<Song> actualSongList = MatchService.getSongMatches(songMap.get("X"), 2);
+    Assertions.assertNull(actualSongList);
   }
 }
