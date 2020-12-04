@@ -89,7 +89,8 @@ public class MatchService {
     while (currentIndex < similarSongsReferenceList.size()) {
 
       final Song currentSong = similarSongsReferenceList.get(currentIndex++);
-      currentSong.getSimilarSongs().parallelStream()
+      currentSong.getSimilarSongs()
+          .parallelStream()
           .forEachOrdered(
               song -> {
                 if (Objects.nonNull(song)) {
