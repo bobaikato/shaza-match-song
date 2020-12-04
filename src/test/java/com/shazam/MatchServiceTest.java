@@ -120,10 +120,7 @@ class MatchServiceTest {
   void getSongMatchesWithValidRootSongAndMatchCount(
       final String rootSongKey, final int topRatedSimilarSongsCount, final List<String> songKeys) {
 
-    final List<Song> expectedSongList = songKeys
-        .parallelStream()
-        .map(songMap::get)
-        .collect(Collectors.toList());
+    final List<Song> expectedSongList = this.getSongsBySongKeys(songKeys);
 
     final Song rootSong = songMap.get(rootSongKey);
     final List<Song> actualSongList = MatchService.getSongMatches(rootSong, topRatedSimilarSongsCount);
@@ -151,11 +148,7 @@ class MatchServiceTest {
     final Map<String, List<Song>> expectedSongsMap = new HashMap<>();
 
     final BiConsumer<String, List<String>> populateExpectedSongsMap = (rootSongKey, songKeys) -> {
-      final List<Song> expectedSongList = songKeys
-          .parallelStream()
-          .map(songMap::get)
-          .collect(Collectors.toList());
-
+      final List<Song> expectedSongList = getSongsBySongKeys(songKeys);
       expectedSongsMap.put(rootSongKey, expectedSongList);
     };
 
@@ -196,5 +189,12 @@ class MatchServiceTest {
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
+  }
+
+  private List<Song> getSongsBySongKeys(final List<String> songKeys) {
+    return songKeys
+        .parallelStream()
+        .map(songMap::get)
+        .collect(Collectors.toList());
   }
 }
