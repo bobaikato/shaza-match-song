@@ -56,3 +56,22 @@ Given a number _**n**_ and a _similarity graph_ of songs, return the _**n**_ hig
 ```
 
 Please write a solution that is production ready.
+
+
+
+## Solution notes
+
+#### Assumptions
+- Rating can be repeated: More than one song can have same rating and in that case `any` song can be returned. 
+- Network complexity is and will be unknown: I considered `recursion`, but to scale the `iterative` approach was imperative.
+- When `​'n'` i​sn’t a positive number, a `null` is returned instead of an Empty list.
+- Any song in the network can be the  root song. And with comes a list of similar songs to be processed.
+- A song can be similar to itself. 
+- Not all root songs have similarity graph
+
+
+#### Other
+- Logs (Minic): Used System output, for basic things using `FeignedLogger`. 
+
+### Testing
+- `mvn test`
