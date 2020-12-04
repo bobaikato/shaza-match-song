@@ -6,12 +6,11 @@ import java.util.List;
 public class Song {
   private final String name;
   private final float rating;
-  private List<Song> similarSongs;
+  private final List<Song> similarSongs = new ArrayList<>();
 
   public Song(String name, float rating) {
     this.name = name;
     this.rating = rating;
-    similarSongs = new ArrayList<>();
   }
 
   public String getName() {
