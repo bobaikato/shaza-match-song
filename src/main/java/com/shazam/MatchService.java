@@ -32,6 +32,7 @@ public class MatchService {
   public static List<Song> getSongMatches(final Song song, final int numTopRatedSimilarSongs) {
     List<Song> songMatches = new ArrayList<>();
 
+    //Match conditions must be met to perform any operation
     if (numTopRatedSimilarSongs > 0 && Objects.nonNull(song) && song.similarSongsIsNotEmpty()) {
       final MatchService ms = MatchService.process(song);
       final Collection<Set<Song>> songsCollection = ms.ratingAndSongsMap.values();
@@ -56,8 +57,6 @@ public class MatchService {
     /*
      * I considered returning an Empty list. But, null is returned because it's expected in the
      * Program class; with this final representation: result <null>
-     *
-     * Null also means there is not match.
      */
     return songMatches.isEmpty() ? null : songMatches;
   }
